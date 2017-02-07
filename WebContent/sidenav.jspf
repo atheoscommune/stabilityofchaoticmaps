@@ -1,0 +1,30 @@
+<nav class="w3-sidenav w3-green w3-hover-blue">
+	<div class="w3-xxlarge w3-container w3-black  w3-padding">
+		Menu</div>
+
+	<div class="w3-border w3-padding">
+		<div class=" w3-text-shadow w3-xlarge ">Iterates</div>
+
+		<a class="w3-hover-yellow" href="logiter.jsp">Logistic Map</a> <a
+			class="w3-hover-yellow" href="nooriter.jsp">Noor Iteration</a> <a
+			class="w3-hover-yellow" href="supiter.jsp">Superior iterates</a> <a
+			class="w3-hover-yellow" href="ishiiter.jsp">Ishikawa iterates</a>
+
+	</div>
+	<div class="w3-border w3-padding">
+		<div class="w3-text-shadow w3-xlarge ">Fractals</div>
+
+
+		<a class="w3-hover-yellow" href="complogfrac.jsp"> Mann Logistic</a> <a
+			class="w3-hover-yellow" href="noorquadfrac.jsp"> Noor Quaratic</a>
+	</div>
+	<div class="w3-border w3-padding">
+		<div class=" w3-text-shadow w3-xlarge ">Cryptography</div>
+
+
+		<a class="w3-hover-yellow" href="imagecrypt.jsp">Image</a> <a class="w3-hover-yellow" href="#">
+			Advanced</a>
+			<a class="w3-hover-yellow" href="#">
+			Key Generation</a>
+	</div>
+</nav>

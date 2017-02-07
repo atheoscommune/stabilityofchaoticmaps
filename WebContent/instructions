@@ -1,0 +1,9 @@
+Install R
+Install JDK JRE ECLIPSE
+Install rJava or individually install the JRI or download the jar files
+Go to run configuration and configure the library path under arguments tab VM argument:
+ -Djava.library.path="/home/prince/R/x86_64-pc-linux-gnu-library/3.3/rJava/jri"
+ The above path contains JRI otherwise you may give another path to the JRI files
+ Under environment tab create a new variabe R_HOME and assign to the location where R is installed eg /usr/lib/R 
+ You might have to do the same for each class file you create or jsp etc
+ Tomcat might not recognize the above configuration therefore you have to copy the jar files to tomcat/lib folder
