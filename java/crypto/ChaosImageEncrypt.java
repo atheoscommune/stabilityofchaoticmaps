@@ -41,7 +41,7 @@ public class ChaosImageEncrypt {
 		return (key == null ? false : (key.length() == 10 ? true : false));
 	}
 
-	public static float logisticMap(float I) {
+	public static float logisticIteration(float I) {
 		return 3.98f * I * (1 - I);
 	}
 
@@ -222,7 +222,6 @@ public class ChaosImageEncrypt {
 		int h = img.getHeight(), w = img.getWidth(), count = 0;
 		int temp = keyArr[9];
 		int rgb;
-		System.out.println("w:"+w+" h:"+h+" w*h:"+(w*h));
 		for (int i = 0; i < w; ++i)
 			for (int j = 0; j < h; j++) {
 				
@@ -230,10 +229,10 @@ public class ChaosImageEncrypt {
 				temp = keyArr[9];
 
 				while (temp-- > 0) {
-					rgb = operation(enctype, rgb);
-					Y0 = logisticMap(Y0);
+					Y0 = logisticIteration(Y0);
 				}
 
+				rgb = operation(enctype, rgb);
 				img.setRGB(i, j, rgb);
 				count++;
 				
@@ -259,7 +258,7 @@ public class ChaosImageEncrypt {
 	public void generateRandomReal() {
 		int i = 0;
 		while (i < 24) {
-			X0 = logisticMap(X0);
+			X0 = logisticIteration(X0);
 			if (X0 >= 0.1 && X0 <= 0.9) {
 				f[i] = X0;
 				i++;
@@ -283,7 +282,7 @@ public class ChaosImageEncrypt {
 	public void iterateY() {
 		int b = keyArr[9];
 		while (b-- > 0) {
-			Y0 = logisticMap(Y0);
+			Y0 = logisticIteration(Y0);
 		}
 	}
 
