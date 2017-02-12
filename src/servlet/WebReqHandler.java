@@ -23,7 +23,7 @@ import sun.util.calendar.LocalGregorianCalendar.Date;
 @WebServlet("/WebReqHandler")
 public class WebReqHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	public static final String NOOR_ITER = "nooriter", LOG_ITER = "logiter", COMP_LOG_FRAC = "complogfrac",
+	public static final String IMAGE_CRYPTO="img_crypto", NOOR_ITER = "nooriter", LOG_ITER = "logiter", COMP_LOG_FRAC = "complogfrac",
 			ISHI_ITER = "ishiiter", SUP_ITER = "supiter", NOOR_SER = "noorseries", NOOR_QUAD_FRAC = "noorquadfrac";
 	public static ScriptRequHandler srh;
 
@@ -135,6 +135,10 @@ public class WebReqHandler extends HttpServlet {
 				cj = Float.parseFloat(request.getParameter("cj"));
 				pd = srh.call_NOOR_FRAC(imageName, n, xmin, xmax, ymin, ymax, A, B, G, ci, cj, gap);
 				imageName  = pd.getFracname();
+				break;
+			case IMAGE_CRYPTO:
+				//File f = request.getPart(null);
+				break;
 			}
 			response.setContentType("text/html");
 			response.setCharacterEncoding("UTF-8");
