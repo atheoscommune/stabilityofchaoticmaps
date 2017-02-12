@@ -18,13 +18,14 @@ public class SupportOperations {
 	public static double[] getDoubleArray(int size, REXP rexp) {
 		double arr[] = new double[size];
 		arr = rexp.asVector().at(0).asDoubleArray();
+		//System.out.println(arr);
 		return arr;
 	}
 
 	public static String stabilityAnalysis(double[] arr, int size) {
-		if (size > 4) {
+		if (size > 5) {
 			if (Math.abs(arr[size - 1] - arr[size - 2]) < 10e-5 && Math.abs(arr[size - 3] - arr[size - 4]) < 10e-5) {
-				return "Maybe " + STABLE + " " + CONVERGENT + " @" + arr[size - 1];
+				return "~Maybe " + STABLE + " " + CONVERGENT + " @" + arr[size - 1];
 			} else {
 				if (size >= 100) {
 					int i = size - 100;
@@ -32,7 +33,7 @@ public class SupportOperations {
 					HashMap<Double, Integer> hs = new HashMap();
 					while (i < size) {
 						temp = Math.floor(arr[i] * 1e5) / 1e5;
-						System.out.println(temp);
+						//System.out.println(temp);
 						if (hs.containsKey(temp)) {
 							hs.put(temp, hs.get(temp) + 1);
 						} else

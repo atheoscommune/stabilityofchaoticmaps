@@ -14,4 +14,4 @@ for(i in 1:n){
 }
 
 plot(X,type="l",ylab="x",xlab="Iterations")
-tail(X,50)
+tail(X,100)

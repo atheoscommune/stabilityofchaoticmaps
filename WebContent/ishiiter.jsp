@@ -39,7 +39,7 @@
 						placeholder="The imaginary component of param r"
 						type="text" name="rj" required /> <span><span /> <span>n</span>
 							<input class="w3-input w3-border"
-							placeholder="Number of iteration" type="text" name="n" required />
+							placeholder="Number of iteration" type="number" min=100 name="n" required />
 							<span>name</span> <input class="w3-input w3-border"
 							placeholder="image name" type="text" name="plotName" required />
 							<span><span /> <input class="w3-button" type="submit" />
@@ -58,10 +58,11 @@
 				<img alt="Result" id="resultimage" class="w3-image"
 				src='http://localhost:8080/fyp/plotted/<%=request.getParameter("image").toString() + ".jpeg"%>'>
 			</a>
+			<p class="w3-green w3-padding w3-center">Nature of plot: <%= request.getParameter("nature") %></p>
+			<br>
 			<%
 				}
 			%>
-			<p class="w3-green w3-padding w3-center">Nature of plot: <%= request.getParameter("nature") %></p>
 			<h2 class="w3-teal w3-center">Description</h2>
 			<p class="w3-pale-green w3-padding">Complex Logistic fractals are plotted
 				using the superior iteration of logistic maps.</p>

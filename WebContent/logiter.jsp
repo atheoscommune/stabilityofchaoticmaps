@@ -31,8 +31,8 @@
 						name="ri" required /><label>rj</label> <input
 						class="w3-input w3-border" type="text" placeholder=The imaginary
 						component of param r between 0 to 4.0"" name="rj" required /> <label>n</label>
-					<input class="w3-input w3-border" type="text"
-						placeholder="Number of iterations" name="n" required /> <label>name</label>
+					<input class="w3-input w3-border" type="number"
+						placeholder="Number of iterations" name="n" min=100 required /> <label>name</label>
 					<input class="w3-input w3-border" type="text"
 						placeholder="Image Name" name="plotName" required /> <input
 						class="w3-button" type="submit" />

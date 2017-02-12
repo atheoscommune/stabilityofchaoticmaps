@@ -35,7 +35,7 @@
 						class="w3-input w3-border" type="text"
 						placeholder="The imaginary component of param r"
 						name="rj" required /> <label>n</label> <input
-						class="w3-input w3-border" type="text"
+						class="w3-input w3-border" type="number" min=100
 						placeholder="No. of iterations to be performed" name="n" required /><label>name</label>
 					<input class="w3-input w3-border" type="text"
 						placeholder="Image name" name="plotName" required /> <input
@@ -55,6 +55,8 @@
 				<img alt="Result" id="resultimage" class="w3-image"
 				src='http://localhost:8080/fyp/plotted/<%=request.getParameter("image").toString() + ".jpeg"%>'>
 			</a>
+			<p class="w3-green w3-padding w3-center">Nature of plot: <%= request.getParameter("nature") %></p>
+			<br>
 			<%
 				}
 			%>

@@ -13,26 +13,20 @@
 	<%@ include file="/sidenav.jspf"%>
 	<div style="margin-left: 15%" class="w3-row">
 		<div class="w3-col m6 w3-border">
-			<form action="WebReqHandler" id="form" class="w3-container ">
+			<form action="WebReqHandler" id="form" class="w3-container "
+				method="POST" enctype="multipart/form-data">
 				<div class="w3-container w3-blue">
 					<h1>Image cryptography using logistic map</h1>
 				</div>
 				<div class="w3-padding-large">
 					<input class="w3-input w3-border" type="hidden" name="reqType"
-						value="logiter" /> <label>x</label><input
-						class="w3-input w3-border" type="text"
-						placeholder="The imaginary component of initial val b/w 0 & 1"
-						name="x" required /> <label>r</label> <input
-						class="w3-input w3-border" type="text"
-						placeholder="The real component of param r between 0 to 4.0"
-						name="r" required />
-						<label>Image Upload</label>
-						<input
-						class="w3-input w3-border" type="file" accept="" name="upload" />
-						
-						<label>Encrypted/decrypted image name</label> <input
+						value="img_crypto" /> <label>Choose File:</label><input
+						class="w3-input w3-border" type="file" name="image" required /> <label>Key</label>
+					<input class="w3-input w3-border" type="pwd"
+						placeholder="Must be exactly 10 characters long" name="pwd" required />
+					<label>Encrypted/decrypted image name</label> <input
 						class="w3-input w3-border" type="text" placeholder="Image Name"
-						name="decrypted name" required /> <input class="w3-button"
+						name="imgname" required /> <input class="w3-button"
 						type="submit" />
 				</div>
 			</form>
@@ -59,10 +53,6 @@
 				Here f(x<sub>n</sub>) is logistic map:<br> f(x<sub>n</sub>) =
 				r*x<sub>n-1</sub>*(1-x<sub>n-1</sub>)
 			</p>
-			<p class="w3-pale-red">The equations are represented in complex
-				The value of x ranges b/w 0 and 1. That of r between 0 and 4. The
-				map shows chaotic nature at r>3.6</p>
-
 		</div>
 	</div>
 
