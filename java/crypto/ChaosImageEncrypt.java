@@ -3,6 +3,7 @@ package crypto;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
@@ -194,7 +195,6 @@ public class ChaosImageEncrypt {
 		}
 
 		return sbr.toString().toCharArray();
-
 	}
 
 	public boolean encryptImage(String key, BufferedImage img, int enctype, String output)
@@ -222,27 +222,44 @@ public class ChaosImageEncrypt {
 		int h = img.getHeight(), w = img.getWidth(), count = 0;
 		int temp = keyArr[9];
 		int rgb;
+		/*
+		for (char c : hexaKey) {
+			System.out.print(c);
+		}
+		System.out.println();
+		*/
 		for (int i = 0; i < w; ++i)
 			for (int j = 0; j < h; j++) {
-				
+
 				rgb = img.getRGB(i, j);
 				temp = keyArr[9];
-
-				while (temp-- > 0) {
-					Y0 = logisticIteration(Y0);
+				if (enctype == ENCRYPTION) {
+					while (temp-- > 0) {
+						Y0 = logisticIteration(Y0);
+						rgb = operation(enctype, rgb, Y0);
+					}
+					img.setRGB(i, j, rgb);
+					count++;
+				} else {
+					Stack<Float> stack = new Stack<>();
+					while (temp-- > 0) {
+						Y0 = logisticIteration(Y0);
+						stack.push(Y0);
+					}
+					while (!stack.isEmpty()) {
+						rgb = operation(enctype, rgb,stack.pop());
+					}
+					img.setRGB(i, j, rgb);
+					count++;
 				}
 
-				rgb = operation(enctype, rgb);
-				img.setRGB(i, j, rgb);
-				count++;
-				
 				if (count == 16) {
 					count = 0;
 					modifySessionKey();
 					generateRandomReal();
 					generateIntegerSequence();
 
-					//System.out.println(Y0);
+					// System.out.println(Y0);
 				}
 			}
 		ImageIO.write(img, "bmp", new File(output));
@@ -338,7 +355,7 @@ public class ChaosImageEncrypt {
 		return rgb;
 	}
 
-	public int operation(int type, int rgb) {
+	public int operation(int type, int rgb, float Y0) {
 
 		if ((Y0 >= 0.10 && Y0 < 0.13) || (Y0 >= 0.34 && Y0 < 0.37) || (Y0 >= 0.58 && Y0 < 0.62)) {
 			count[0]++;
