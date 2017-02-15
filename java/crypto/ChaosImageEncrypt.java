@@ -7,45 +7,147 @@ import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
-public class ChaosImageEncrypt {
-	public static final String allZeroes = "000000000000000000000000";
-	static final int ALPHA_MASK = -16777216, NEG_ALPHA_MASK = 16777215;
-	static int count[] = new int[9];
+import sun.awt.windows.ThemeReader;
 
+/**
+ *
+ * This class is an implementation of the paper Image encryption using chaotic
+ * logistic map (Published 2006) by - N.K. Pareek , Vinod Patidar , K.K. Sud.
+ *
+ * This class is used to encrypt an image, preferably lossless compressed image,
+ * by using Picard Iteration of Logistic map. It encrypts individual pixel's RGB
+ * value.
+ *
+ * @author Prince Rachit Sinha
+ * @since February-2017
+ * @version 1.0
+ */
+
+public class ChaosImageEncrypt {
+	/**
+	 * A String of 24 zeroes.
+	 *
+	 */
+	public static final String allZeroes = "000000000000000000000000";
+	/**
+	 * Contains value 2.0<sup>24</sup>
+	 */
 	public static final float DENO = (float) Math.pow(2, 24);
 
-	static final int ENCRYPTION = 0, DECRYPTION = 1, EXTRACT_LS8 = 255;
+	/**
+	 * Constant value 0 for encryption
+	 */
+	static final int ENCRYPTION = 0;
 
+	/**
+	 * Constant value 1 for Decryption
+	 */
+	static final int DECRYPTION = 1;
+	/**
+	 * This constant contains an integer value equivalent to 11111111 which when
+	 * XORed with an integer extracts the last 8 bits.
+	 */
+	static final int EXTRACT_LS8 = 255;
+
+	/**
+	 * This method finds the value of ( X01+X02 )mod 1.
+	 * 
+	 * @param X01
+	 *            First real number
+	 * @param X02
+	 *            Second real number
+	 * @return floating point number less than 1.0
+	 */
 	public static float calculateXY0(float X01, float X02) {
 		int t1 = (int) (X01 + X02);
 		float t2 = (X01 + X02) - t1;
 		return t2;
 	}
 
+	/**
+	 * It extracts and returns the integer value equivalent of 8 bit Alpha value
+	 * of the given pixel.
+	 * 
+	 * @param rgb
+	 *            Contains equivalent integer value of argb value of a pixel.
+	 */
 	static public int getAlpha(int rgb) {
 		return (rgb >>> 24);
 	}
 
+	/**
+	 * It extracts and returns the integer value equivalent of 8 bit Blue color
+	 * value of the given pixel.
+	 * 
+	 * @param rgb
+	 *            Contains equivalent integer value of argb value of a pixel.
+	 */
 	static public int getBlue(int rgb) {
 		return (rgb & 0x000000FF);
 	}
 
+	/**
+	 * It extracts and returns the integer value equivalent of 8 bit green color
+	 * value of the given pixel.
+	 * 
+	 * @param rgb
+	 *            Contains equivalent integer value of argb value of a pixel.
+	 */
 	static public int getGreen(int rgb) {
 		return ((rgb >> 8) & 0x000000FF);
 	}
 
+	/**
+	 * It extracts and returns the integer value equivalent of 8 bit red color
+	 * value of the given pixel.
+	 * 
+	 * @param rgb
+	 *            Contains equivalent integer value of argb value of a pixel.
+	 */
 	static public int getRed(int rgb) {
 		return ((rgb >> 16) & 0x000000FF);
 	}
+
+	/**
+	 * This method is used to validate the ASCII key by the user. The key should
+	 * be of length 10.
+	 * 
+	 * @param key
+	 *            A String given by the user
+	 * @return True if the key is valid, false otherwise.
+	 */
 
 	static private boolean isValidKey(String key) {
 		return (key == null ? false : (key.length() == 10 ? true : false));
 	}
 
+	/**
+	 * An implementation of Logistic Map Picard Iteration which is x<sub>n</sub>
+	 * = x<sub>n-1</sub>*r*(1-x<sub>n-1</sub>). Here r is taken as
+	 * 3.999999999999999 for maximum chaotic nature.
+	 * 
+	 * @param I
+	 *            A floating point number as x<sub>n-1</sub> to calculate the
+	 *            nth iteration.
+	 * @return A float after one iteration.
+	 */
 	public static float logisticIteration(float I) {
-		return 3.98f * I * (1 - I);
+		return 3.999999999999999f * I * (1 - I);
 	}
 
+	/**
+	 * Merge the Red, Green, Apha and Blue bits and return it as one integer.
+	 * 
+	 * @param alpha
+	 *            The alpha value of the pixel
+	 * @param R
+	 *            The red value of the pixel
+	 * @param G
+	 *            The green value of the pixel
+	 * @param B
+	 *            The blue value of the pixel
+	 * @return Returns the equivalent ARGB pixel value of the passed params
+	 */
 	public static int writeRGB(int alpha, int R, int G, int B) {
 		int x = 0;
 		R &= EXTRACT_LS8;
@@ -63,17 +165,59 @@ public class ChaosImageEncrypt {
 
 	float[] f = new float[24];
 
+	/**
+	 * An array of hexadecimal values of the ASCII key.
+	 */
 	char[] hexaKey = new char[20];
 
 	char[] keyArr, B1 = new char[24], B2 = new char[24];
 
+	/**
+	 * Sequence of Random integers.
+	 *
+	 */
 	int[] P = new int[24];
 
-	float X0, Y0, X01, X02, Y01, Y02;
+	/**
+	 * Floating point number for the seed for iteration over logistic maps.
+	 *
+	 */
+	float X0;
+	/**
+	 * Floating point number which determines the operation to be performed on
+	 * the pixel.
+	 */
+	float Y0;
+	/**
+	 * Real number calculated by converting the key into binary and then
+	 * converting to base 10. (Stores value of Step 6)
+	 */
+	float X01;
+	/**
+	 * A floating number which stores value of Step 7
+	 */
+	float X02;
+	/**
+	 * A floating number which stores value from calculation of step 11.
+	 */
+	float Y01;
+	float Y02;
 
+	/**
+	 * Performs XOR operation as: R with keyArr[3] , G with keyArr[4] and B with
+	 * keyArr[5] if the group number is 2. Performs XOR operation as: R with
+	 * keyArr[6] , G with keyArr[7] and B with keyArr[8] if the group number is
+	 * 5.
+	 * 
+	 * @param rgb
+	 *            The argb value of the pixel.
+	 * @param group
+	 *            The group number
+	 * @return An argb(int) after XOR operation
+	 */
 	public int byteXOR(int rgb, int group) {// checked
-		/* group 2 and 5 */
-		int xbyte = 0, i = 0, j = 0, k = 0;
+
+		int i = 0, j = 0, k = 0;
 		if (group == 2) {
 			i = 3;
 			j = 4;
@@ -103,6 +247,15 @@ public class ChaosImageEncrypt {
 		return rgb;
 	}
 
+	/**
+	 * Calculates the sum of hexaKeys in the give range and then divides it by
+	 * 96. It stores the calculated value in the static X02.
+	 * 
+	 * @param start
+	 *            The start index to run the summation loop.
+	 * @param end
+	 *            The end index.
+	 */
 	public void calculateX02(int start, int end) {
 		X02 = 0.0f;
 		for (int i = start; i <= end; i++) {
@@ -111,6 +264,13 @@ public class ChaosImageEncrypt {
 		X02 /= 96;
 	}
 
+	/**
+	 * Calculates the X01 or Y01 according to the formula
+	 * (BX<sub>2</sub>)<sub>10</sub>/2<sup>24</sup>.
+	 * 
+	 * @param B
+	 *            An array of characters (bits)
+	 */
 	public float calculateXY01(char[] B) {
 		StringBuilder sbr = new StringBuilder();
 		sbr.append(B);
@@ -119,6 +279,9 @@ public class ChaosImageEncrypt {
 
 	}
 
+	/**
+	 * Calculates Y02 using the formula: <img src='y02.png'>
+	 */
 	public void calculateY02() {
 		float sum = 0.0f;
 		char c;
@@ -130,6 +293,17 @@ public class ChaosImageEncrypt {
 		Y02 = Y02 / DENO;
 	}
 
+	/**
+	 * Performs the operation : <img src='complexoper.png'>
+	 * 
+	 * @param rgb
+	 *            The argb value of the pixel
+	 * @param type
+	 *            Operation type i.e. encryption/decryption
+	 * @param groupno
+	 *            The group number of operation.
+	 * @return An argb value as int.
+	 */
 	public int complexOper(int rgb, int type, int groupno) {// checked
 
 		/* group 3 and 6 */
@@ -141,7 +315,7 @@ public class ChaosImageEncrypt {
 		green = getGreen(rgb);
 		red = getRed(rgb);
 
-		int newRGB = 0, temp = 0, i = 0, j = 0, k = 0, c = 0;
+		int i = 0, j = 0, k = 0, c = 0;
 
 		if (groupno == 3) {
 			i = 3;
@@ -176,6 +350,19 @@ public class ChaosImageEncrypt {
 		return rgb;
 	}
 
+	/**
+	 * Creates B1 or B2. This method converts the 3 session keys into binary
+	 * array of characters.
+	 * 
+	 * @param i
+	 *            Value of session key #1
+	 * @param j
+	 *            Value of session key #2
+	 * @param k
+	 *            Value of session key #3
+	 * @return A character array of bits.
+	 */
+
 	public char[] createB(char i, char j, char k) {
 		StringBuffer sbr = new StringBuffer(allZeroes);
 		int l = 0, count = 0;
@@ -197,6 +384,21 @@ public class ChaosImageEncrypt {
 		return sbr.toString().toCharArray();
 	}
 
+	/**
+	 * This function is the sole function the user is expected to call when
+	 * using this algorithm to encrypt the image.
+	 * 
+	 * @param key
+	 *            The ASCII key string of length 10
+	 * @param img
+	 *            An object of BufferedImage to be encrypted/decrypted.
+	 * @param enctype
+	 *            Type pf operation i.e. encryption(0) or decryption(1)
+	 * @param output
+	 *            enc/dec image name.
+	 * @return A boolean value showing the status of operation. True for success
+	 *         and false for failure.
+	 */
 	public boolean encryptImage(String key, BufferedImage img, int enctype, String output)
 			throws InvalidKeyException, IOException {
 		if (!isValidKey(key)) {
@@ -222,12 +424,12 @@ public class ChaosImageEncrypt {
 		int h = img.getHeight(), w = img.getWidth(), count = 0;
 		int temp = keyArr[9];
 		int rgb;
-		/*
+
 		for (char c : hexaKey) {
 			System.out.print(c);
 		}
 		System.out.println();
-		*/
+
 		for (int i = 0; i < w; ++i)
 			for (int j = 0; j < h; j++) {
 
@@ -247,7 +449,7 @@ public class ChaosImageEncrypt {
 						stack.push(Y0);
 					}
 					while (!stack.isEmpty()) {
-						rgb = operation(enctype, rgb,stack.pop());
+						rgb = operation(enctype, rgb, stack.pop());
 					}
 					img.setRGB(i, j, rgb);
 					count++;
@@ -266,16 +468,24 @@ public class ChaosImageEncrypt {
 		return true;
 	}
 
+	/**
+	 * Generates a sequence of random integer in [0,24] and stores them into P.
+	 */
 	public void generateIntegerSequence() {
 		for (int i = 0; i < 24; ++i) {
 			P[i] = (int) (23 * (f[i] - 0.1f) / 0.8) + 1;
 		}
 	}
 
+	/**
+	 * Generates a sequence of random real nums in between 0 and 0.9 and stores
+	 * them into f.
+	 */
 	public void generateRandomReal() {
 		int i = 0;
 		while (i < 24) {
 			X0 = logisticIteration(X0);
+			/* NOTE:If the key is all zero then X0 will lie out of bounds */
 			if (X0 >= 0.1 && X0 <= 0.9) {
 				f[i] = X0;
 				i++;
@@ -283,6 +493,13 @@ public class ChaosImageEncrypt {
 		}
 	}
 
+	/**
+	 * Inverts the rgb value of pixel.
+	 * 
+	 * @param rgb
+	 *            The argb value of the pixel
+	 * @return An integer equivalent of negative of pixel(rgb only)
+	 */
 	public int invertColor(int rgb) {// checked
 		/* group 1 */
 		int alpha, red, green, blue;
@@ -296,6 +513,10 @@ public class ChaosImageEncrypt {
 		return (rgb);
 	}
 
+	/**
+	 * Method used to iterate Y0 (key[10])<sub>10</sub> times. (Indexing assumed
+	 * to be from 1.)
+	 */
 	public void iterateY() {
 		int b = keyArr[9];
 		while (b-- > 0) {
@@ -303,6 +524,10 @@ public class ChaosImageEncrypt {
 		}
 	}
 
+	/**
+	 * This method is called after operation on 16 pixel. It modifies the
+	 * Session keys and then calls setHexaKey.
+	 */
 	public void modifySessionKey() {
 		for (int i = 0; i < 9; i++) {
 			keyArr[i] = (char) (((int) keyArr[i] + (int) keyArr[9]) % 256);
@@ -310,6 +535,22 @@ public class ChaosImageEncrypt {
 		setHexaKey();
 	}
 
+	/**
+	 * <table>
+	 * <tr>
+	 * <td valign=top>Performs the operation:</td>
+	 * <td><img src='group3.png'></td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @param rgb
+	 *            The argb of pixel
+	 * @param type
+	 *            The type of operation viz. encryption(0) or decryption(1)
+	 * @param groupno
+	 *            The group number of the operation
+	 * @return An integer equivalent of pixel after performing the operation
+	 */
 	public int notByteXOR(int rgb, int type, int groupno) {// checked
 		/* group 4 and 7 */
 		int xbyte = 0, i, j, k;
@@ -355,51 +596,60 @@ public class ChaosImageEncrypt {
 		return rgb;
 	}
 
+	/**
+	 * This function acts as a map to function. It takes a value between 0 and 1
+	 * and calls the appropriate operation.
+	 * 
+	 * @param type
+	 *            The type of operation viz. encryption(0) or decryption(1)
+	 * @param rgb
+	 *            The argb of pixel
+	 * @param Y0
+	 *            The value which decides the operation
+	 * @return Modified argb value in the form of an integer.
+	 */
 	public int operation(int type, int rgb, float Y0) {
 
 		if ((Y0 >= 0.10 && Y0 < 0.13) || (Y0 >= 0.34 && Y0 < 0.37) || (Y0 >= 0.58 && Y0 < 0.62)) {
-			count[0]++;
 			return invertColor(rgb);
 		}
 		if ((Y0 >= 0.13 && Y0 < 0.16) || (Y0 >= 0.37 && Y0 < 0.40) || (Y0 >= 0.62 && Y0 < 0.66)) {
-			count[1]++;
 			return byteXOR(rgb, 2);
 		}
 		if ((Y0 >= 0.16 && Y0 < 0.19) || (Y0 >= 0.40 && Y0 < 0.43) || (Y0 >= 0.66 && Y0 < 0.70)) {
-			count[2]++;
 			return complexOper(rgb, type, 3);
 		}
 		if ((Y0 >= 0.19 && Y0 < 0.22) || (Y0 >= 0.43 && Y0 < 0.46) || (Y0 >= 0.70 && Y0 < 0.74)) {
-			count[3]++;
 			return notByteXOR(rgb, type, 4);
 		}
 		if ((Y0 >= 0.22 && Y0 < 0.25) || (Y0 >= 0.46 && Y0 < 0.49) || (Y0 >= 0.74 && Y0 < 0.78)) {
-			count[4]++;
 			return byteXOR(rgb, 5);
 		}
 		if ((Y0 >= 0.25 && Y0 < 0.28) || (Y0 >= 0.49 && Y0 < 0.52) || (Y0 >= 0.78 && Y0 < 0.82)) {
-			count[5]++;
 			return complexOper(rgb, type, 6);
 		}
 		if ((Y0 >= 0.28 && Y0 < 0.31) || (Y0 >= 0.52 && Y0 < 0.55) || (Y0 >= 0.82 && Y0 < 0.86)) {
-			count[6]++;
 			return notByteXOR(rgb, type, 7);
 		}
 		if ((Y0 >= 0.31 && Y0 < 0.34) || (Y0 >= 0.55 && Y0 < 0.58) || (Y0 >= 0.86 && Y0 <= 0.90)) {
-			count[7]++;
 			return rgb;
 
 		}
-		count[8]++;
 		return rgb;
 	}
 
+	/**
+	 * Converts the ASCII representaion of key into an array character of
+	 * hexadecimal values.
+	 */
 	public void setHexaKey() {
-		String str = "";
+		String str = "", temp;
 		for (char c : keyArr) {
-			str += Integer.toHexString((int) c);
+			temp = Integer.toHexString((int) c);
+			if (temp.length() == 1)
+				temp = "0" + temp;
+			str += temp;
 		}
 		hexaKey = str.toCharArray();
-
 	}
 }
