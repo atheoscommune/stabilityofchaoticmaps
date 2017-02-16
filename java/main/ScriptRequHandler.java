@@ -3,7 +3,6 @@ package main;
 import java.net.URL;
 
 import org.rosuda.JRI.Rengine;
-import org.rosuda.REngine.REXP;
 
 /**
  * This class contains methods to handle the incoming requests for the R
@@ -13,11 +12,34 @@ import org.rosuda.REngine.REXP;
  *
  */
 public class ScriptRequHandler {
-
+	/**
+	 * Object of org.rosuda.JRI.Rengine
+	 */
 	private Rengine re;
-	private String plotName, imageName;
+	/**
+	 * Object of org.rosuda.REXP
+	 */
 	private org.rosuda.JRI.REXP rexp;
 
+	/**
+	 * This method runs an R script namely LOG_ITER.R and saves the image with
+	 * the name provided.
+	 * 
+	 * @param xi
+	 *            The real component of x
+	 * @param ri
+	 *            The real component of r
+	 * @param xj
+	 *            The imaginary component of x
+	 * @param rj
+	 *            The imaginary component of x
+	 * @param n
+	 *            The number of iterations
+	 * @param name
+	 *            The name of the plot
+	 * @return An object of {@link PlotDetails} which contains information about
+	 *         the plot.
+	 */
 	public PlotDetails call_LOG_ITER(float xi, float ri, float xj, float rj, int n, String name) {
 		re = RObjectLoader.getRObject();
 		if (re != null) {

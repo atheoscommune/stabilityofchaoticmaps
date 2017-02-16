@@ -16,15 +16,26 @@ import main.ScriptRequHandler;
 import sun.util.calendar.LocalGregorianCalendar.Date;
 
 /**
- * Servlet implementation class WebReqHandler
+ * Servlet implementation class WebReqHandler 
+ * This servlet handles all the
+ * incoming requests for fractal plotting and iteration plotting. It further
+ * calls respective methods of {@link ScriptRequHandler} and redirects to the
+ * same page along with the url of plotted image.
  */
 
 @WebServlet("/WebReqHandler")
 public class WebReqHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	/**
+	 * String literals for corresponding request.
+	 */
 	public static final String IMAGE_CRYPTO = "img_crypto", NOOR_ITER = "nooriter", LOG_ITER = "logiter",
 			COMP_LOG_FRAC = "complogfrac", ISHI_ITER = "ishiiter", SUP_ITER = "supiter", NOOR_SER = "noorseries",
 			NOOR_QUAD_FRAC = "noorquadfrac";
+	
+	/**
+	 * An object of {@link ScriptRequHandler} to call the plotting methods.
+	 */
 	public static ScriptRequHandler srh;
 
 	/**
@@ -37,10 +48,7 @@ public class WebReqHandler extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response) This servlet handles all the incoming requests for fractal
-	 *      plotting and iteration plotting. It further calls respective methods
-	 *      of {@link ScriptRequHandler} and redirects to the same page along
-	 *      with the url of plotted image.
+	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

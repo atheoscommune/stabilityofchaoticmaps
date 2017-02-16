@@ -1,0 +1,2 @@
+If the input key is al zeroes then the logistic maps will always
+ give 0 as output to any number of iteration.
