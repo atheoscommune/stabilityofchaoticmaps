@@ -163,6 +163,10 @@ public class ChaosImageEncrypt {
 		return x;
 	}
 
+	/**
+	 * Stores an array of random real nos between 0.1 and 0.9.
+	 */
+
 	float[] f = new float[24];
 
 	/**
@@ -170,7 +174,18 @@ public class ChaosImageEncrypt {
 	 */
 	char[] hexaKey = new char[20];
 
-	char[] keyArr, B1 = new char[24], B2 = new char[24];
+	/**
+	 * Key in the form of character array (ASCII values)
+	 */
+	char[] keyArr;
+	/**
+	 * An array of characters representing 3 session keys bit value.
+	 */
+	char[] B1 = new char[24];
+	/**
+	 * An array of characters representing 3 session keys bit value.
+	 */
+	char[] B2 = new char[24];
 
 	/**
 	 * Sequence of Random integers.
@@ -201,6 +216,9 @@ public class ChaosImageEncrypt {
 	 * A floating number which stores value from calculation of step 11.
 	 */
 	float Y01;
+	/**
+	 * A floating number which stores value for calculations of Y0.
+	 */
 	float Y02;
 
 	/**
@@ -536,11 +554,8 @@ public class ChaosImageEncrypt {
 	}
 
 	/**
-	 * <table>
-	 * <tr>
-	 * <td valign=top>Performs the operation:</td>
-	 * <td><img src='group3.png'></td>
-	 * </tr>
+	 * Performs the operation:<br>
+	 * <img src='group3.png'>
 	 * </table>
 	 * 
 	 * @param rgb

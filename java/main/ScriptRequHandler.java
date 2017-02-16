@@ -5,6 +5,13 @@ import java.net.URL;
 import org.rosuda.JRI.Rengine;
 import org.rosuda.REngine.REXP;
 
+/**
+ * This class contains methods to handle the incoming requests for the R
+ * scripts.
+ * 
+ * @author prince
+ *
+ */
 public class ScriptRequHandler {
 
 	private Rengine re;
@@ -96,7 +103,7 @@ public class ScriptRequHandler {
 			rexp = re.eval("source('" + url.getPath() + "')");
 
 			double d[] = SupportOperations.getDoubleArray(100, rexp);
-			PlotDetails pd = SupportOperations.analyseVector("nooriter", d, 100, r, A,B,G);
+			PlotDetails pd = SupportOperations.analyseVector("nooriter", d, 100, r, A, B, G);
 			pd.setItername(name);
 			/* Now close the device */
 			re.eval("dev.off()");
