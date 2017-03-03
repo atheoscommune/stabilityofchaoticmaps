@@ -60,44 +60,52 @@ public class SupportOperations {
 			 * between the values. If the values have gaps less than 10e-5 then
 			 * we say it is convergent at that value.
 			 */
-			if (Math.abs(arr[size - 1] - arr[size - 2]) < 10e-5 && Math.abs(arr[size - 3] - arr[size - 4]) < 10e-5) {
-				return "Maybe " + STABLE + " " + CONVERGENT + " @" + arr[size - 1];
+			if (arr[size - 1] > 1) {
+				return "11Does not exist";
 			} else {
 
-				/*
-				 * Otherwise we attempt to find the of there exist any cyclic
-				 * nature. If so then the periodicity.
-				 */
-				if (size >= 100) {
-					int i = size - 100;
-					double temp;
-					HashMap<Double, Integer> hs = new HashMap();
-					while (i < size) {
-						temp = Math.floor(arr[i] * 1e5) / 1e5;
-						if (hs.containsKey(temp)) {
-							hs.put(temp, hs.get(temp) + 1);
-						} else
-							hs.put(temp, 1);
-						i++;
-					}
-					Collection<Integer> c = hs.values();
-					Iterator<Integer> iter = c.iterator();
-					int periodicity = 0;
-					while (iter.hasNext()) {
-						if (iter.next() >= 8)
-							periodicity++;
-					}
-					if (periodicity > 2) {
-						return "Maybe " + CYCLIC + " with periodicity " + periodicity;
+				if (Math.abs(arr[size - 1] - arr[size - 2]) < 10e-5
+						&& Math.abs(arr[size - 3] - arr[size - 4]) < 10e-5) {
+					return "Maybe " + STABLE + " " + CONVERGENT + " @" + arr[size - 1];
+				} else {
+
+					/*
+					 * Otherwise we attempt to find the of there exist any
+					 * cyclic nature. If so then the periodicity.
+					 */
+					if (size >= 100) {
+						int i = size - 100;
+						double temp;
+						HashMap<Double, Integer> hs = new HashMap();
+						while (i < size) {
+							temp = Math.floor(arr[i] * 1e5) / 1e5;
+							if (hs.containsKey(temp)) {
+								hs.put(temp, hs.get(temp) + 1);
+							} else
+								hs.put(temp, 1);
+							i++;
+						}
+						Collection<Integer> c = hs.values();
+						Iterator<Integer> iter = c.iterator();
+						int periodicity = 0;
+						while (iter.hasNext()) {
+							if (iter.next() >= 8)
+								periodicity++;
+						}
+						if (periodicity > 2) {
+							return "Maybe " + CYCLIC + " with periodicity " + periodicity;
+						}
 					}
 				}
 			}
-		}
 
-		/*
-		 * If no stability point or cyclic nature is found then return chaotic
-		 */
-		return "Maybe " + CHAOTIC;
+			/*
+			 * If no stability point or cyclic nature is found then return
+			 * chaotic
+			 */
+			return "Maybe " + CHAOTIC;
+		}
+		return "";
 	}
 
 	/**
@@ -126,28 +134,35 @@ public class SupportOperations {
 	public static PlotDetails analyseVector(String type, double[] arr, int size, float r, float A, float B, float G) {
 		PlotDetails pd = new PlotDetails();
 		pd.setType(type);
-		switch (type) {
-		case LOG_ITER:
-			if (r < 1) {
+		/*if(arr[size-1]>1.0 || arr[size-1]<1.0){
+			pd.setNature("Does not exist");
+			System.out.println(arr[size-1]);
+		}else{*/
+			switch (type) {
+			case LOG_ITER:
+				if (r < 3 || arr[size - 1] > 1.0) {
+					pd.setNature(stabilityAnalysis(arr, size));
+				} else if (r < 3.44949) {
+					pd.setNature("Maybe " + STABLE + " and " + CYCLIC + " with periodicity 2");
+				} else if (r < 3.56995) {
+					pd.setNature("Maybe " + STABLE + " and " + CYCLIC);
+				} else if (r < 4.000000000000000000000001) {
+					pd.setNature("Maybe " + CHAOTIC);
+				} else if (r < 4.000000000000000000000001) {
+					pd.setNature("Does Not Exist ");
+				}
+				break;
+			case SUP_ITER:
 				pd.setNature(stabilityAnalysis(arr, size));
-			} else if (r < 3.44949) {
-				pd.setNature("Maybe " + STABLE + " & " + CYCLIC + " with periodicity 2");
-			} else if (r < 3.56995) {
-				pd.setNature("Maybe " + STABLE + " & " + CYCLIC);
-			} else {
-				pd.setNature("Maybe " + CHAOTIC);
+				break;
+			case ISHI_ITER:
+				pd.setNature(stabilityAnalysis(arr, size));
+				break;
+			case NOOR_ITER:
+				pd.setNature(stabilityAnalysis(arr, size));
+				break;
 			}
-			break;
-		case SUP_ITER:
-			pd.setNature(stabilityAnalysis(arr, size));
-			break;
-		case ISHI_ITER:
-			pd.setNature(stabilityAnalysis(arr, size));
-			break;
-		case NOOR_ITER:
-			pd.setNature(stabilityAnalysis(arr, size));
-			break;
-		}
+		/*}*/
 		return pd;
 	}
 }

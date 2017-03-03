@@ -8,23 +8,26 @@ import javax.imageio.ImageIO;
 public class Test {
 	public static void main(String[] args) {
 		try {
-			String fname;
-			File file = new File(ChaosImageEncrypt.class.getClassLoader().getResource("raw.bmp").getPath());
-			BufferedImage img = ImageIO.read(file);
+			int x = 1;
+			if (x == 0) {
+				File file = new File(ChaosImageEncrypt.class.getClassLoader().getResource("raw.bmp").getPath());
+				BufferedImage img = ImageIO.read(file);
 
-			int count = 0;
-			String pwd = "";
-			String pwdHexa = "00000000000000000000";
+				String pwd = "PRINCE123g";
+				ChaosImageEncrypt lme = new ChaosImageEncrypt();
 
-			for (int i = 0; i < 20; i += 2) {
-				pwd += (char) (Integer.parseInt(pwdHexa.substring(i, i + 2), 16));
+				lme.encryptImage(pwd, img, 0, "enc.bmp");
+			}else{
+				{
+					File file = new File(ChaosImageEncrypt.class.getClassLoader().getResource("enc.bmp").getPath());
+					BufferedImage img = ImageIO.read(file);
+
+					String pwd = "PRINCE123g";
+					ChaosImageEncrypt lme = new ChaosImageEncrypt();
+
+					lme.encryptImage(pwd, img, 1, "dec.bmp");
+				}
 			}
-			int[] b = new int[10];
-			System.out.println("done");
-			ChaosImageEncrypt lme = new ChaosImageEncrypt();
-
-			lme.encryptImage(pwd, img, 0, "enc.bmp");
-
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();

@@ -23,7 +23,7 @@ public class ScriptRequHandler {
 
 	/**
 	 * This method runs an R script namely LOG_ITER.R and saves the image with
-	 * the name provided.
+	 * the name provided. Here it generates 
 	 * 
 	 * @param xi
 	 *            The real component of x

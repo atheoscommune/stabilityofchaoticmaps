@@ -15,7 +15,7 @@
 		<div class="w3-col m6">
 			<form action="WebReqHandler" id="form" class="w3-border">
 				<div class="w3-container w3-blue">
-					<h1>Complex Logistic Fractal</h1>
+					<h1>Noor quadratic fractal/julia set</h1>
 				</div>
 				<div class="w3-padding-large">
 

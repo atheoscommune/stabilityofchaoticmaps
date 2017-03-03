@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package crypto;
 
 import java.awt.image.BufferedImage;
@@ -7,25 +10,11 @@ import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
-import sun.awt.windows.ThemeReader;
-
 /**
+ * @author prince
  *
- * This class is an implementation of the paper Image encryption using chaotic
- * logistic map (Published 2006) by - N.K. Pareek , Vinod Patidar , K.K. Sud.
- *
- * This class is used to encrypt an image, preferably lossless compressed image,
- * by using Picard Iteration of Logistic map. It encrypts individual pixel's RGB
- * value.
- *
- * @author Prince Rachit Sinha
- * @since February-2017
- * @version 1.0
  */
-
-public class ChaosImageEncrypt {
-
-	float r,A,B,G;
+public class MultipleIterationImageEncryption {
 
 	
 
