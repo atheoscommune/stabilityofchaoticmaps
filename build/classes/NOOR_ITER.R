@@ -3,20 +3,20 @@
 
 #Here A=alpha,B=Beta,G=gamma,T = logistic() map
 #noorIterations.R
-logistic = function(x,r=3.11){
-  return (x*r*(1-x))
+logistic = function(x,r){
+	return (x*r*(1-x))
 }
 
-calcz = function(G,x,r=3.11){
-  return ((1-G)*x + G*logistic(x,r))
+calcz = function(G,x,r){
+	return ((1-G)*x + G*logistic(x,r))
 }
 
-calcy = function(A,G,x,r=3.11){
-  return = ((1-A)*x + A*logistic(calcz(G,x,r)))
+calcy = function(A,G,x,r){
+	return  ((1-A)*x + A*logistic(calcz(G,x,r),r))
 }
 
-calcx = function(A,B,G,x,r=3.11){
-  return ((1-B)*x + B*logistic(calcy(A,G,x,r)))
+calcx = function(A,B,G,x,r){
+	return ((1-B)*x + B*logistic(calcy(A,G,x,r),r))
 }
 
 

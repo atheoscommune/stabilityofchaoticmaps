@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 public class MultipleIterationImageEncryption {
 
 	
+	
 
 	/**
 	 * A String of 24 zeroes.
@@ -114,22 +115,54 @@ public class MultipleIterationImageEncryption {
 	static private boolean isValidKey(String key) {
 		return (key == null ? false : (key.length() == 10 ? true : false));
 	}
-
-	static public void iterSelect() {
-
+	
+	public static float logistic(float x, float r){
+		return r*x*(1-x);
 	}
 
 	/**
-	 * An implementation of Logistic Map Picard Iteration which is x<sub>n</sub>
-	 * = x<sub>n-1</sub>*r*(1-x<sub>n-1</sub>). Here r is taken as
-	 * 3.999999999999999 for maximum chaotic nature.
+	 * This function will iterate 4 step feedback machine using LM
+	 * @return 
+	 * */
+	static public float noorIter(float A, float B, float G, float r, float x) {
+		return 0.0f;
+		//return ( (1-B)*x + B*logistic(calcy(A,G,x,r)) );
+	}
+
+	/**
+	 * An implementation of Logistic Map Noor Iteration which is -----.
+	 * Here r is taken as
+	 * from the previously calculated static data for maximum chaotic nature.
 	 * 
 	 * @param I
 	 *            A floating point number as x<sub>n-1</sub> to calculate the
 	 *            nth iteration.
 	 * @return A float after one iteration.
 	 */
-	public static float logisticIteration(float I) {
+	public float logisticIteration(float I) {
+		switch (sumKey) {
+		case 0:
+			
+			break;
+		case 1:
+			
+			break;
+		case 2:
+			
+			break;
+		case 3:
+			
+			break;
+		case 4:
+			
+			break;
+		case 5:
+			
+			break;
+
+		default:
+			break;
+		}
 		return 3.999999999999999f * I * (1 - I);
 	}
 
@@ -160,6 +193,7 @@ public class MultipleIterationImageEncryption {
 		x ^= B;
 		return x;
 	}
+	int sumKey=0;
 
 	/**
 	 * Stores an array of random real nos between 0.1 and 0.9.
@@ -657,12 +691,15 @@ public class MultipleIterationImageEncryption {
 	 */
 	public void setHexaKey() {
 		String str = "", temp;
+		sumKey = 0;
 		for (char c : keyArr) {
 			temp = Integer.toHexString((int) c);
+			sumKey+=(int)c;
 			if (temp.length() == 1)
 				temp = "0" + temp;
 			str += temp;
 		}
+		sumKey = sumKey%6;
 		hexaKey = str.toCharArray();
 	}
 }

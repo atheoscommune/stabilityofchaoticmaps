@@ -1,20 +1,20 @@
 #Reference paper : Julia sets and Mandelbrot sets in Noor orbit
 #Ashish a , Mamta Rani b, ⇑ , Renu Chugh a
 
-quadratic = function(z, c = 0) {
+quadratic = function(z, c) {
 	return (z * z + c)
 	
 }
 
-calcz = function(G, z, c = 0) {
+calcz = function(G, z, c) {
 	return ((1 - G) * z + G * quadratic(z, c))
 }
 
-calcy = function(B, G, z, c = 0) {
+calcy = function(B, G, z, c) {
 	return = ((1 - B) * z + B * quadratic(calcz(G, z, c),c))
 }
 
-calcx = function(A, B, G, z, c = 0) {
+calcx = function(A, B, G, z, c) {
 	return ((1 - A) * z + A * quadratic(calcy(B, G, z, c),c))
 }
 ## n=10
