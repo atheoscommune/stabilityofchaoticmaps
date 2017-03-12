@@ -11,12 +11,12 @@ calcz = function(G,x,r){
 	return ((1-G)*x + G*logistic(x,r))
 }
 
-calcy = function(A,G,x,r){
-	return  ((1-A)*x + A*logistic(calcz(G,x,r),r))
+calcy = function(B,G,x,r){
+	return  ((1-B)*x + B*logistic(calcz(G,x,r),r))
 }
 
 calcx = function(A,B,G,x,r){
-	return ((1-B)*x + B*logistic(calcy(A,G,x,r),r))
+	return ((1-A)*x + A*logistic(calcy(B,G,x,r),r))
 }
 
 

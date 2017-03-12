@@ -16,9 +16,6 @@ import javax.imageio.ImageIO;
  */
 public class MultipleIterationImageEncryption {
 
-	
-	
-
 	/**
 	 * A String of 24 zeroes.
 	 *
@@ -115,24 +112,25 @@ public class MultipleIterationImageEncryption {
 	static private boolean isValidKey(String key) {
 		return (key == null ? false : (key.length() == 10 ? true : false));
 	}
-	
-	public static float logistic(float x, float r){
-		return r*x*(1-x);
+
+	public static float logistic(float x, float r) {
+		return r * x * (1 - x);
 	}
 
 	/**
 	 * This function will iterate 4 step feedback machine using LM
-	 * @return 
-	 * */
+	 * 
+	 * @return
+	 */
 	static public float noorIter(float A, float B, float G, float r, float x) {
 		return 0.0f;
-		//return ( (1-B)*x + B*logistic(calcy(A,G,x,r)) );
+		// (1-B)*x + B*logistic( calcy(A,G,x,r) ,r)
 	}
 
 	/**
-	 * An implementation of Logistic Map Noor Iteration which is -----.
-	 * Here r is taken as
-	 * from the previously calculated static data for maximum chaotic nature.
+	 * An implementation of Logistic Map Noor Iteration which is -----. Here r
+	 * is taken as from the previously calculated static data for maximum
+	 * chaotic nature.
 	 * 
 	 * @param I
 	 *            A floating point number as x<sub>n-1</sub> to calculate the
@@ -142,23 +140,17 @@ public class MultipleIterationImageEncryption {
 	public float logisticIteration(float I) {
 		switch (sumKey) {
 		case 0:
-			
-			break;
+			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
 		case 1:
-			
-			break;
+			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
 		case 2:
-			
-			break;
+			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
 		case 3:
-			
-			break;
+			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
 		case 4:
-			
-			break;
+			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
 		case 5:
-			
-			break;
+			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
 
 		default:
 			break;
@@ -193,7 +185,8 @@ public class MultipleIterationImageEncryption {
 		x ^= B;
 		return x;
 	}
-	int sumKey=0;
+
+	int sumKey = 0;
 
 	/**
 	 * Stores an array of random real nos between 0.1 and 0.9.
@@ -694,12 +687,12 @@ public class MultipleIterationImageEncryption {
 		sumKey = 0;
 		for (char c : keyArr) {
 			temp = Integer.toHexString((int) c);
-			sumKey+=(int)c;
+			sumKey += (int) c;
 			if (temp.length() == 1)
 				temp = "0" + temp;
 			str += temp;
 		}
-		sumKey = sumKey%6;
+		sumKey = sumKey % 6;
 		hexaKey = str.toCharArray();
 	}
 }
