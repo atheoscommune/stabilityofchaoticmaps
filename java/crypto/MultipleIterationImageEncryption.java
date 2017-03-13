@@ -123,8 +123,7 @@ public class MultipleIterationImageEncryption {
 	 * @return
 	 */
 	static public float noorIter(float A, float B, float G, float r, float x) {
-		return 0.0f;
-		// (1-B)*x + B*logistic( calcy(A,G,x,r) ,r)
+		return (1 - A) * x + A * logistic((1 - B) * x + B * logistic((1 - G) * x + G * logistic(x, r), r), r);
 	}
 
 	/**
