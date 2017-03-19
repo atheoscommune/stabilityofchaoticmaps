@@ -29,9 +29,9 @@ public class WebReqHandler extends HttpServlet {
 	/**
 	 * String literals for corresponding request.
 	 */
-	public static final String IMAGE_CRYPTO = "img_crypto", NOOR_ITER = "nooriter", LOG_ITER = "logiter",
+	public static final String  NOOR_ITER = "nooriter", LOG_ITER = "logiter",
 			COMP_LOG_FRAC = "complogfrac", ISHI_ITER = "ishiiter", SUP_ITER = "supiter", NOOR_SER = "noorseries",
-			NOOR_QUAD_FRAC = "noorquadfrac";
+			NOOR_QUAD_FRAC = "noorquadfrac",NOOR_LOG_FRAC="noorlogfrac";
 	
 	/**
 	 * An object of {@link ScriptRequHandler} to call the plotting methods.
@@ -65,15 +65,7 @@ public class WebReqHandler extends HttpServlet {
 			if (imageName == null || imageName.trim().length() < 1) {
 				imageName = LocalDateTime.now().toString();
 			}
-			/*
-			 * FileOutputStream out = new
-			 * FileOutputStream("/plotted/"+imageName+"22"); out.write(1);
-			 * out.close();
-			 */
-			/*
-			 * try { Thread.sleep(3000); } catch (InterruptedException e) {
-			 * System.out.println(e.getMessage()); }
-			 */
+		
 			switch (reqType) {// switches the type of request, initializes the
 								// variables and finally calls the respective
 								// method
@@ -154,8 +146,21 @@ public class WebReqHandler extends HttpServlet {
 				pd = srh.call_NOOR_FRAC(imageName, n, xmin, xmax, ymin, ymax, A, B, G, ci, cj, gap);
 				imageName = pd.getFracname();
 				break;
-			case IMAGE_CRYPTO:
-				// File f = request.getPart(null);
+				/* For Noor logistic map fractal */
+			case NOOR_LOG_FRAC:
+				A = Float.parseFloat(request.getParameter("A"));
+				B = Float.parseFloat(request.getParameter("B"));
+				G = Float.parseFloat(request.getParameter("G"));
+				xmin = Float.parseFloat(request.getParameter("xmin"));
+				xmax = Float.parseFloat(request.getParameter("xmax"));
+				ymin = Float.parseFloat(request.getParameter("ymin"));
+				ymax = Float.parseFloat(request.getParameter("ymax"));
+				gap = Float.parseFloat(request.getParameter("gap"));
+				n = Integer.parseInt(request.getParameter("n"));
+				ri = Float.parseFloat(request.getParameter("ri"));
+				rj = Float.parseFloat(request.getParameter("rj"));
+				pd = srh.call_NOOR_LOG_FRAC(imageName, n, xmin, xmax, ymin, ymax, A, B, G, ri, rj, gap);
+				imageName = pd.getFracname();
 				break;
 			}
 			response.setContentType("text/html");

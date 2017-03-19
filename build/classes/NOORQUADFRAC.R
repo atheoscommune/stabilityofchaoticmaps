@@ -44,7 +44,7 @@ if (A != 0 && B != 0 && G != 0) {
 } else{
 	for (i in 1:n) {
 		index <- which(Mod(oper) != Inf)
-		oper[index] = quadratic(oper[index], c)
+		oper[index] = calcx(A, B, G, oper[index], c)
 		plotmatrix[index] = plotmatrix[index] + 1
 	}
 }

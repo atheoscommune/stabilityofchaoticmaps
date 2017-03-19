@@ -306,5 +306,36 @@ public class ScriptRequHandler {
 			return null;
 		}
 	}
-
+	public PlotDetails call_NOOR_LOG_FRAC(String name, int n, float xmin, float xmax, float ymin, float ymax, float A,
+			float B, float G, float ri, float rj, float gap) {
+		re = RObjectLoader.getRObject();
+		if (re != null) {
+			/* Get the url of the script to be executed */
+			URL url = this.getClass().getClassLoader().getResource("/NOORLOGFRAC.R");
+			/* Open a jpeg device */
+			re.eval("jpeg('WebContent/plotted/" + name + ".jpeg')");
+			/* Set the input parameters value */
+			re.eval("r=" + ri + " + " + rj + "i");
+			re.eval("n=" + n);
+			re.eval("G=" + G);
+			re.eval("A=" + A);
+			re.eval("B=" + B);
+			re.eval("xmin=" + xmin);
+			re.eval("xmax=" + xmax);
+			re.eval("ymin=" + ymin);
+			re.eval("ymax=" + ymax);
+			re.eval("gap=" + gap);
+			/* Run the script */
+			rexp = re.eval("source('" + url.getPath() + "')");
+			PlotDetails pd = new PlotDetails();
+			pd.setFracname(name);
+			/* Now close the device */
+			re.eval("dev.off()");
+			return pd;
+		} else {
+			System.err.println(
+					"Either the library used to connect with R is mismatching or R cannot be loaded due to some reason");
+			return null;
+		}
+	}
 }

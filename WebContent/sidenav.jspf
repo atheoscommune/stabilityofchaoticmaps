@@ -16,9 +16,10 @@
 
 
 		<a class="w3-hover-yellow" href="complogfrac.jsp"> Mann Logistic</a> <a
-			class="w3-hover-yellow" href="noorquadfrac.jsp"> Noor Quaratic</a>
+			class="w3-hover-yellow" href="noorquadfrac.jsp"> Noor Quaratic</a><a
+			class="w3-hover-yellow" href="noorlogfrac.jsp"> Noor Logistic</a>
 	</div>
-	<div class="w3-border w3-padding">
+<!-- 	<div class="w3-border w3-padding">
 		<div class=" w3-text-shadow w3-xlarge ">Cryptography</div>
 
 
@@ -26,5 +27,5 @@
 			Advanced</a>
 			<a class="w3-hover-yellow" href="#">
 			Key Generation</a>
-	</div>
+	</div> -->
 </nav>

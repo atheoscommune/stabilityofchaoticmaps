@@ -119,18 +119,27 @@ public class MultipleIterationImageEncryption {
 
 	/**
 	 * This function will iterate 4 step feedback machine using LM
+	 * @param A
+	 * 			A constant float 
+	 * @param B
+	 * 			A constant float 
+	 * @param G
+	 *  			A constant float 
+	 * @param r
+	 *  			A constant float 
+	 * @param x
+	 *  			A constant float containing seed value for the iteration 
 	 * 
-	 * @return
+	 * @return A floating point number
 	 */
 	static public float noorIter(float A, float B, float G, float r, float x) {
 		return (1 - A) * x + A * logistic((1 - B) * x + B * logistic((1 - G) * x + G * logistic(x, r), r), r);
 	}
 
 	/**
-	 * An implementation of Logistic Map Noor Iteration which is -----. Here r
-	 * is taken as from the previously calculated static data for maximum
-	 * chaotic nature.
-	 * 
+	 * This function calls the method returns noorIter(). The parameters passed to the 
+	 * noorIter depends on the value of variable sumKey. All the values passed
+	 * have been calculated to be extremely chaotic in nature.
 	 * @param I
 	 *            A floating point number as x<sub>n-1</sub> to calculate the
 	 *            nth iteration.
@@ -139,22 +148,21 @@ public class MultipleIterationImageEncryption {
 	public float logisticIteration(float I) {
 		switch (sumKey) {
 		case 0:
-			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
+			return noorIter(0.2f, 0.5f, 0.4f, 7.1f, I);
 		case 1:
-			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
+			return noorIter(0.3f, 0.5f, 0.5f, 6.1f, I);
 		case 2:
-			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
+			return noorIter(0.4f, 0.4f, 0.6f, 5.6f, I);
 		case 3:
-			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
+			return noorIter(0.5f, 0.8f, 0.7f, 4.6f, I);
 		case 4:
-			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
+			return noorIter(0.5f, 0.6f, 0.5f, 5.1f, I);
 		case 5:
-			return noorIter(1.0f, 1.0f, 1.0f, 3.99f, I);
+			return noorIter(0.5f, 0.4f, 0.4f, 5.6f, I);
 
 		default:
-			break;
+			return 3.999999999999999f * I * (1 - I);
 		}
-		return 3.999999999999999f * I * (1 - I);
 	}
 
 	/**
@@ -186,7 +194,7 @@ public class MultipleIterationImageEncryption {
 	}
 
 	int sumKey = 0;
-
+	float seed = 0.9f;
 	/**
 	 * Stores an array of random real nos between 0.1 and 0.9.
 	 */
@@ -443,6 +451,7 @@ public class MultipleIterationImageEncryption {
 	 */
 	public boolean encryptImage(String key, BufferedImage img, int enctype, String output)
 			throws InvalidKeyException, IOException {
+		//long start = System.nanoTime();
 		if (!isValidKey(key)) {
 			throw new InvalidKeyException("Invalid Key. Either the key is null or the Key length is not 10.");
 		}
@@ -467,11 +476,6 @@ public class MultipleIterationImageEncryption {
 		int temp = keyArr[9];
 		int rgb;
 
-		for (char c : hexaKey) {
-			System.out.print(c);
-		}
-		System.out.println();
-
 		for (int i = 0; i < w; ++i)
 			for (int j = 0; j < h; j++) {
 
@@ -479,6 +483,7 @@ public class MultipleIterationImageEncryption {
 				temp = keyArr[9];
 				if (enctype == ENCRYPTION) {
 					while (temp-- > 0) {
+
 						Y0 = logisticIteration(Y0);
 						rgb = operation(enctype, rgb, Y0);
 					}
@@ -486,6 +491,7 @@ public class MultipleIterationImageEncryption {
 					count++;
 				} else {
 					Stack<Float> stack = new Stack<>();
+
 					while (temp-- > 0) {
 						Y0 = logisticIteration(Y0);
 						stack.push(Y0);
@@ -506,6 +512,8 @@ public class MultipleIterationImageEncryption {
 					// System.out.println(Y0);
 				}
 			}
+/*		double elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
+		System.out.println(elapsedTimeInSec);*/
 		ImageIO.write(img, "bmp", new File(output));
 		return true;
 	}
@@ -526,7 +534,7 @@ public class MultipleIterationImageEncryption {
 	public void generateRandomReal() {
 		int i = 0;
 		while (i < 24) {
-			X0 = logisticIteration(X0);
+			X0 = logistic(X0, 3.9999f);
 			/* NOTE:If the key is all zero then X0 will lie out of bounds */
 			if (X0 >= 0.1 && X0 <= 0.9) {
 				f[i] = X0;
@@ -561,8 +569,10 @@ public class MultipleIterationImageEncryption {
 	 */
 	public void iterateY() {
 		int b = keyArr[9];
+		if (Y0 == 0)
+			Y0 = 0.1f;
 		while (b-- > 0) {
-			Y0 = logisticIteration(Y0);
+			Y0 = logistic(Y0, 3.9999f);
 		}
 	}
 
@@ -671,9 +681,12 @@ public class MultipleIterationImageEncryption {
 			return notByteXOR(rgb, type, 7);
 		}
 		if ((Y0 >= 0.31 && Y0 < 0.34) || (Y0 >= 0.55 && Y0 < 0.58) || (Y0 >= 0.86 && Y0 <= 0.90)) {
+
+			// System.out.println("lasst");
 			return rgb;
 
 		}
+		// System.out.println(Y0);
 		return rgb;
 	}
 
@@ -683,7 +696,6 @@ public class MultipleIterationImageEncryption {
 	 */
 	public void setHexaKey() {
 		String str = "", temp;
-		sumKey = 0;
 		for (char c : keyArr) {
 			temp = Integer.toHexString((int) c);
 			sumKey += (int) c;
@@ -691,7 +703,9 @@ public class MultipleIterationImageEncryption {
 				temp = "0" + temp;
 			str += temp;
 		}
-		sumKey = sumKey % 6;
+		seed = logistic(seed, 3.9999f);
+		sumKey = (sumKey + (int)(seed*10000)) % 6;
 		hexaKey = str.toCharArray();
+		//System.out.println(sumKey + " sumkey");
 	}
 }

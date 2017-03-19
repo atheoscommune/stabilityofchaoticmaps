@@ -420,7 +420,7 @@ public class ChaosImageEncrypt {
 	 * @param img
 	 *            An object of BufferedImage to be encrypted/decrypted.
 	 * @param enctype
-	 *            Type pf operation i.e. encryption(0) or decryption(1)
+	 *            Type of operation i.e. encryption(0) or decryption(1)
 	 * @param output
 	 *            enc/dec image name.
 	 * @return A boolean value showing the status of operation. True for success
@@ -428,6 +428,7 @@ public class ChaosImageEncrypt {
 	 */
 	public boolean encryptImage(String key, BufferedImage img, int enctype, String output)
 			throws InvalidKeyException, IOException {
+		//long start = System.nanoTime();
 		if (!isValidKey(key)) {
 			throw new InvalidKeyException("Invalid Key. Either the key is null or the Key length is not 10.");
 		}
@@ -451,11 +452,6 @@ public class ChaosImageEncrypt {
 		int h = img.getHeight(), w = img.getWidth(), count = 0;
 		int temp = keyArr[9];
 		int rgb;
-
-		for (char c : hexaKey) {
-			System.out.print(c);
-		}
-		System.out.println();
 
 		for (int i = 0; i < w; ++i)
 			for (int j = 0; j < h; j++) {
@@ -491,6 +487,9 @@ public class ChaosImageEncrypt {
 					// System.out.println(Y0);
 				}
 			}
+		/*
+		double elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
+		System.out.println(elapsedTimeInSec);*/
 		ImageIO.write(img, "bmp", new File(output));
 		return true;
 	}

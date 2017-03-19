@@ -6,7 +6,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="w3css.css">
-<title>Noor Quadratic Fractal</title>
+<title>Noor LM Fractal</title>
 </head>
 <body>
 
@@ -15,16 +15,16 @@
 		<div class="w3-col m6">
 			<form action="WebReqHandler" id="form" class="w3-border">
 				<div class="w3-container w3-blue">
-					<h1>Noor quadratic fractal/julia set</h1>
+					<h1>Noor Logistic fractal/julia set</h1>
 				</div>
 				<div class="w3-padding-large">
 
 					<input class="w3-input w3-border" type="hidden" name="reqType"
-						value="noorquadfrac" /> <span>ci</span><input
-						class="w3-input w3-border" type="text" name="ci"
-						placeholder="The real component of c" required /><span>cj</span><input
-						class="w3-input w3-border" type="text" name="cj"
-						placeholder="The imaginary component of c" required /><span>n</span>
+						value="noorlogfrac" /> <span>ri</span><input
+						class="w3-input w3-border" type="text" name="ri"
+						placeholder="The real component of r" required /><span>rj</span><input
+						class="w3-input w3-border" type="text" name="rj"
+						placeholder="The imaginary component of r" required /><span>n</span>
 					<input class="w3-input w3-border" type="text" name="n"
 						placeholder="Number of iteration to be made on each point of plane"
 						required /> <span>name</span> <input class="w3-input w3-border"
