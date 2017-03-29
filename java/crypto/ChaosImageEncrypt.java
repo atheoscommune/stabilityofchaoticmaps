@@ -428,7 +428,7 @@ public class ChaosImageEncrypt {
 	 */
 	public boolean encryptImage(String key, BufferedImage img, int enctype, String output)
 			throws InvalidKeyException, IOException {
-		//long start = System.nanoTime();
+		long start = System.nanoTime();
 		if (!isValidKey(key)) {
 			throw new InvalidKeyException("Invalid Key. Either the key is null or the Key length is not 10.");
 		}
@@ -484,12 +484,11 @@ public class ChaosImageEncrypt {
 					generateRandomReal();
 					generateIntegerSequence();
 
-					// System.out.println(Y0);
 				}
 			}
-		/*
+		
 		double elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
-		System.out.println(elapsedTimeInSec);*/
+		System.out.println(elapsedTimeInSec);
 		ImageIO.write(img, "bmp", new File(output));
 		return true;
 	}

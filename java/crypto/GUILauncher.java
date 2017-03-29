@@ -42,7 +42,7 @@ public class GUILauncher extends JFrame {
 	JLabel dispLabel = new JLabel("");
 	private JTextField textField;
 	ButtonGroup bgroup = new ButtonGroup();
-	ChaosImageEncrypt cie;
+	MultipleIterationImageEncryption cie;
 
 	File f;
 
@@ -67,7 +67,7 @@ public class GUILauncher extends JFrame {
 	 * Create the frame.
 	 */
 	public GUILauncher() {
-		cie = new ChaosImageEncrypt();
+		cie = new MultipleIterationImageEncryption();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 712, 510);
@@ -123,13 +123,14 @@ public class GUILauncher extends JFrame {
 					JOptionPane.showMessageDialog(null, "Key length must be 10");
 				} else if (!rdbtnEncrypt.isSelected() && !decryptBtn.isSelected()) {
 					JOptionPane.showMessageDialog(null, "Select encryption or decryption");
-				} else if (f == null) {
+				} else if (dispimg==null) {
 					JOptionPane.showMessageDialog(null, "Choose a BMP file");
 				} else {
 					int cryptType = (rdbtnEncrypt.isSelected() ? 0 : 1);
 					try {
 						String name = f.getName();
 						String pwd = textField.getText();
+						System.out.println(cryptType+" "+pwd);
 						cie.encryptImage(pwd, dispimg, cryptType, "crypto"+name);
 						JOptionPane.showMessageDialog(null, "Process completed!!!!");
 						errorLbl.setIcon(new ImageIcon(dispimg));

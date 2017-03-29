@@ -33,7 +33,5 @@ for (i in 1:n) {
 }
 
 
-image(xaxis, yaxis, plotmatrix, col = cols)
-#image(xaxis, yaxis, plotmatrix, col = cols,xlab=sprintf("pixelgap=%.3f,r=%.3f,n=%d",gap,Mod(r),n),ylab=sprintf("xmin=%.3f,xmax=%.3f,ymin=%.3f,ymax=%.3f,A=%.2f,B=%.2f,G=%.2f",xmin,xmax,ymin,ymax,A,B,G))
-
+image(xaxis, yaxis, plotmatrix, col = cols,xlab=sprintf("pixelgap=%.3f,r=%.3f,n=%d,xmin=%.3f,xmax=%.3f",gap,Mod(r),n,xmin,xmax),ylab=sprintf("ymin=%.3f,ymax=%.3f,A=%.2f,B=%.2f,G=%.2f",ymin,ymax,A,B,G))
 

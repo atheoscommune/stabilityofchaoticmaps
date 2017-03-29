@@ -146,7 +146,7 @@ public class SupportOperations {
 					pd.setNature("Maybe " + STABLE + " and " + CYCLIC + " with periodicity 2");
 				} else if (r < 3.56995) {
 					pd.setNature("Maybe " + STABLE + " and " + CYCLIC);
-				} else if (r < 4.000000000000000000000001) {
+				} else if (r < 4.00000000000000000000000) {
 					pd.setNature("Maybe " + CHAOTIC);
 				} else if (r < 4.000000000000000000000001) {
 					pd.setNature("Does Not Exist ");

@@ -119,50 +119,22 @@ public class MultipleIterationImageEncryption {
 
 	/**
 	 * This function will iterate 4 step feedback machine using LM
+	 * 
 	 * @param A
-	 * 			A constant float 
+	 *            A constant float
 	 * @param B
-	 * 			A constant float 
+	 *            A constant float
 	 * @param G
-	 *  			A constant float 
+	 *            A constant float
 	 * @param r
-	 *  			A constant float 
+	 *            A constant float
 	 * @param x
-	 *  			A constant float containing seed value for the iteration 
+	 *            A constant float containing seed value for the iteration
 	 * 
 	 * @return A floating point number
 	 */
 	static public float noorIter(float A, float B, float G, float r, float x) {
 		return (1 - A) * x + A * logistic((1 - B) * x + B * logistic((1 - G) * x + G * logistic(x, r), r), r);
-	}
-
-	/**
-	 * This function calls the method returns noorIter(). The parameters passed to the 
-	 * noorIter depends on the value of variable sumKey. All the values passed
-	 * have been calculated to be extremely chaotic in nature.
-	 * @param I
-	 *            A floating point number as x<sub>n-1</sub> to calculate the
-	 *            nth iteration.
-	 * @return A float after one iteration.
-	 */
-	public float logisticIteration(float I) {
-		switch (sumKey) {
-		case 0:
-			return noorIter(0.2f, 0.5f, 0.4f, 7.1f, I);
-		case 1:
-			return noorIter(0.3f, 0.5f, 0.5f, 6.1f, I);
-		case 2:
-			return noorIter(0.4f, 0.4f, 0.6f, 5.6f, I);
-		case 3:
-			return noorIter(0.5f, 0.8f, 0.7f, 4.6f, I);
-		case 4:
-			return noorIter(0.5f, 0.6f, 0.5f, 5.1f, I);
-		case 5:
-			return noorIter(0.5f, 0.4f, 0.4f, 5.6f, I);
-
-		default:
-			return 3.999999999999999f * I * (1 - I);
-		}
 	}
 
 	/**
@@ -451,7 +423,7 @@ public class MultipleIterationImageEncryption {
 	 */
 	public boolean encryptImage(String key, BufferedImage img, int enctype, String output)
 			throws InvalidKeyException, IOException {
-		//long start = System.nanoTime();
+		long start = System.nanoTime();
 		if (!isValidKey(key)) {
 			throw new InvalidKeyException("Invalid Key. Either the key is null or the Key length is not 10.");
 		}
@@ -475,45 +447,103 @@ public class MultipleIterationImageEncryption {
 		int h = img.getHeight(), w = img.getWidth(), count = 0;
 		int temp = keyArr[9];
 		int rgb;
+		float[] arr;
 
+		float A, B, G, r;
+
+		B = G = 0;
+		A = 1;
+		r = 3.99999999f;
+		
 		for (int i = 0; i < w; ++i)
 			for (int j = 0; j < h; j++) {
 
 				rgb = img.getRGB(i, j);
 				temp = keyArr[9];
+				arr = new float[temp];
+
 				if (enctype == ENCRYPTION) {
+					int ji = 0;
 					while (temp-- > 0) {
 
-						Y0 = logisticIteration(Y0);
-						rgb = operation(enctype, rgb, Y0);
+						Y0 = noorIter(A, B, G, r, Y0);
+						arr[ji] = Y0;
+						ji++;
+					}
+					for (float f : arr) {
+						rgb = operation(enctype, rgb, f);
 					}
 					img.setRGB(i, j, rgb);
+
 					count++;
 				} else {
-					Stack<Float> stack = new Stack<>();
-
 					while (temp-- > 0) {
-						Y0 = logisticIteration(Y0);
-						stack.push(Y0);
+						Y0 = noorIter(A, B, G, r, Y0);
+						arr[temp] = Y0;
 					}
-					while (!stack.isEmpty()) {
-						rgb = operation(enctype, rgb, stack.pop());
+
+					for (float f : arr) {
+						rgb = operation(enctype, rgb, f);
 					}
+
 					img.setRGB(i, j, rgb);
 					count++;
 				}
 
 				if (count == 16) {
 					count = 0;
+				//	System.out.println(count);
 					modifySessionKey();
 					generateRandomReal();
 					generateIntegerSequence();
+					switch (sumKey) {
+					case 0:
+						A = 0.2f;
+						B = 0.5f;
+						G = 0.4f;
+						r = 7.1f;
+						break;
+					case 1:
+						A = 0.3f;
+						B = 0.5f;
+						G = 0.5f;
+						r = 6.1f;
+						break;
+					case 2:
+						A = 0.4f;
+						B = 0.4f;
+						G = 0.6f;
+						r = 5.6f;
+						break;
+					case 3:
+						A = 0.5f;
+						B = 0.8f;
+						G = 0.7f;
+						r = 4.6f;
+						break;
+					case 4:
+						A = 0.5f;
+						B = 0.6f;
+						G = 0.5f;
+						r = 5.1f;
+						break;
+					case 5:
+						A = 0.5f;
+						B = 0.4f;
+						G = 0.4f;
+						r = 5.6f;
+						break;
 
-					// System.out.println(Y0);
+					default:
+						B = G = 0;
+						A = 1;
+						r = 3.99999999f;
+					}
+
 				}
 			}
-/*		double elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
-		System.out.println(elapsedTimeInSec);*/
+		double elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
+		System.out.println(elapsedTimeInSec);
 		ImageIO.write(img, "bmp", new File(output));
 		return true;
 	}
@@ -581,9 +611,15 @@ public class MultipleIterationImageEncryption {
 	 * Session keys and then calls setHexaKey.
 	 */
 	public void modifySessionKey() {
-		for (int i = 0; i < 9; i++) {
-			keyArr[i] = (char) (((int) keyArr[i] + (int) keyArr[9]) % 256);
+		float s = 0;
+		for (int i = 0; i < 8; i++) {
+			s += keyArr[i];
+			keyArr[i] = (char) ((((int) keyArr[i] + (int) keyArr[9]) % 256) + 1);
 		}
+		s = ((s/1000) - (int)(s/1000) + Y0);
+		s = ((s/10) - (int)(s/10));
+		keyArr[9] = (char)((logistic(s, 3.9999f)*1000)%256);
+		
 		setHexaKey();
 	}
 
@@ -658,35 +694,24 @@ public class MultipleIterationImageEncryption {
 	 * @return Modified argb value in the form of an integer.
 	 */
 	public int operation(int type, int rgb, float Y0) {
+		int sumkey = (int) (Y0 * 10000000) % 8;
 
-		if ((Y0 >= 0.10 && Y0 < 0.13) || (Y0 >= 0.34 && Y0 < 0.37) || (Y0 >= 0.58 && Y0 < 0.62)) {
+		switch (sumkey) {
+		case 0:
 			return invertColor(rgb);
-		}
-		if ((Y0 >= 0.13 && Y0 < 0.16) || (Y0 >= 0.37 && Y0 < 0.40) || (Y0 >= 0.62 && Y0 < 0.66)) {
+		case 1:
 			return byteXOR(rgb, 2);
-		}
-		if ((Y0 >= 0.16 && Y0 < 0.19) || (Y0 >= 0.40 && Y0 < 0.43) || (Y0 >= 0.66 && Y0 < 0.70)) {
+		case 2:
 			return complexOper(rgb, type, 3);
-		}
-		if ((Y0 >= 0.19 && Y0 < 0.22) || (Y0 >= 0.43 && Y0 < 0.46) || (Y0 >= 0.70 && Y0 < 0.74)) {
+		case 3:
 			return notByteXOR(rgb, type, 4);
-		}
-		if ((Y0 >= 0.22 && Y0 < 0.25) || (Y0 >= 0.46 && Y0 < 0.49) || (Y0 >= 0.74 && Y0 < 0.78)) {
+		case 4:
 			return byteXOR(rgb, 5);
-		}
-		if ((Y0 >= 0.25 && Y0 < 0.28) || (Y0 >= 0.49 && Y0 < 0.52) || (Y0 >= 0.78 && Y0 < 0.82)) {
+		case 5:
 			return complexOper(rgb, type, 6);
-		}
-		if ((Y0 >= 0.28 && Y0 < 0.31) || (Y0 >= 0.52 && Y0 < 0.55) || (Y0 >= 0.82 && Y0 < 0.86)) {
+		case 6:
 			return notByteXOR(rgb, type, 7);
 		}
-		if ((Y0 >= 0.31 && Y0 < 0.34) || (Y0 >= 0.55 && Y0 < 0.58) || (Y0 >= 0.86 && Y0 <= 0.90)) {
-
-			// System.out.println("lasst");
-			return rgb;
-
-		}
-		// System.out.println(Y0);
 		return rgb;
 	}
 
@@ -704,8 +729,8 @@ public class MultipleIterationImageEncryption {
 			str += temp;
 		}
 		seed = logistic(seed, 3.9999f);
-		sumKey = (sumKey + (int)(seed*10000)) % 6;
+		sumKey = (sumKey + (int) (seed * 10000)) % 6;
 		hexaKey = str.toCharArray();
-		//System.out.println(sumKey + " sumkey");
+		//System.out.println(" sumkey:"+sumKey + " "+ (int)keyArr[9]);
 	}
 }
