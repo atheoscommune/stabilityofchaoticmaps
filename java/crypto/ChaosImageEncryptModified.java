@@ -1,6 +1,3 @@
-/**
- * 
- */
 package crypto;
 
 import java.awt.image.BufferedImage;
@@ -10,11 +7,25 @@ import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
+import sun.awt.windows.ThemeReader;
+
 /**
- * @author prince
  *
+ * This class is an implementation of the paper Image encryption using chaotic
+ * logistic map (Published 2006) by - N.K. Pareek , Vinod Patidar , K.K. Sud.
+ *
+ * This class is used to encrypt an image, preferably lossless compressed image,
+ * by using Picard Iteration of Logistic map. It encrypts individual pixel's RGB
+ * value.
+ *
+ * @author Prince Rachit Sinha
+ * @since February-2017
+ * @version 1.0
  */
-public class MultipleIterationImageEncryption {
+
+public class ChaosImageEncryptModified {
+
+	float r, A, B, G;
 
 	/**
 	 * A String of 24 zeroes.
@@ -113,28 +124,22 @@ public class MultipleIterationImageEncryption {
 		return (key == null ? false : (key.length() == 10 ? true : false));
 	}
 
-	public static float logistic(float x, float r) {
-		return r * x * (1 - x);
+	static public void iterSelect() {
+
 	}
 
 	/**
-	 * This function will iterate 4 step feedback machine using LM
+	 * An implementation of Logistic Map Picard Iteration which is x<sub>n</sub>
+	 * = x<sub>n-1</sub>*r*(1-x<sub>n-1</sub>). Here r is taken as
+	 * 3.999999999999999 for maximum chaotic nature.
 	 * 
-	 * @param A
-	 *            A constant float
-	 * @param B
-	 *            A constant float
-	 * @param G
-	 *            A constant float
-	 * @param r
-	 *            A constant float
-	 * @param x
-	 *            A constant float containing seed value for the iteration
-	 * 
-	 * @return A floating point number
+	 * @param I
+	 *            A floating point number as x<sub>n-1</sub> to calculate the
+	 *            nth iteration.
+	 * @return A float after one iteration.
 	 */
-	static public float noorIter(float A, float B, float G, float r, float x) {
-		return (1 - A) * x + A * logistic((1 - B) * x + B * logistic((1 - G) * x + G * logistic(x, r), r), r);
+	public static float logisticIteration(float I) {
+		return 3.999999999999999f * I * (1 - I);
 	}
 
 	/**
@@ -165,8 +170,6 @@ public class MultipleIterationImageEncryption {
 		return x;
 	}
 
-	int sumKey = 0;
-	float seed = 0.9f;
 	/**
 	 * Stores an array of random real nos between 0.1 and 0.9.
 	 */
@@ -224,6 +227,7 @@ public class MultipleIterationImageEncryption {
 	 * A floating number which stores value for calculations of Y0.
 	 */
 	float Y02;
+	float seed = 0.0000009f;
 
 	/**
 	 * Performs XOR operation as: R with keyArr[3] , G with keyArr[4] and B with
@@ -301,12 +305,11 @@ public class MultipleIterationImageEncryption {
 
 	}
 
-	float sum = 0.0f;
-
 	/**
 	 * Calculates Y02 using the formula: <img src='y02.png'>
 	 */
 	public void calculateY02() {
+		float sum = 0.0f;
 		char c;
 		for (int k = 0; k < 24; k++) {
 			c = B2[P[k]];
@@ -338,7 +341,7 @@ public class MultipleIterationImageEncryption {
 		green = getGreen(rgb);
 		red = getRed(rgb);
 
-		int i = 0, j = 0, k = 0;
+		int i = 0, j = 0, k = 0, c = 0;
 
 		if (groupno == 3) {
 			i = 3;
@@ -416,7 +419,7 @@ public class MultipleIterationImageEncryption {
 	 * @param img
 	 *            An object of BufferedImage to be encrypted/decrypted.
 	 * @param enctype
-	 *            Type pf operation i.e. encryption(0) or decryption(1)
+	 *            Type of operation i.e. encryption(0) or decryption(1)
 	 * @param output
 	 *            enc/dec image name.
 	 * @return A boolean value showing the status of operation. True for success
@@ -447,45 +450,31 @@ public class MultipleIterationImageEncryption {
 		int h = img.getHeight(), w = img.getWidth(), count = 0;
 		int temp = keyArr[9];
 		int rgb;
-		float[] arr;
-
-		float A, B, G, r;
-
-		B = G = 0;
-		A = 1;
-		r = 3.99f;
 
 		for (int i = 0; i < w; ++i)
 			for (int j = 0; j < h; j++) {
 
 				rgb = img.getRGB(i, j);
 				temp = keyArr[9];
-				arr = new float[temp];
-
 				if (enctype == ENCRYPTION) {
-					int ji = 0;
 					while (temp-- > 0) {
-
-						Y0 = noorIter(A, B, G, r, Y0);
-						arr[ji] = Y0;
-						ji++;
-					}
-					for (float f : arr) {
-						rgb = operation(enctype, rgb, f);
+						Y0 = logisticIteration(Y0);
+						rgb = operation(enctype, rgb, Y0);
 					}
 					img.setRGB(i, j, rgb);
-
 					count++;
 				} else {
+					float[] arr = new float[temp];
+					
 					while (temp-- > 0) {
-						Y0 = noorIter(A, B, G, r, Y0);
-						arr[temp] = Y0;
+						Y0 = logisticIteration(Y0);
+						arr[temp]  = Y0;
 					}
-
-					for (float f : arr) {
+					
+					for(float f:arr){
 						rgb = operation(enctype, rgb, f);
 					}
-
+					
 					img.setRGB(i, j, rgb);
 					count++;
 				}
@@ -495,58 +484,15 @@ public class MultipleIterationImageEncryption {
 					modifySessionKey();
 					generateRandomReal();
 					generateIntegerSequence();
+
 					B2 = createB(keyArr[0], keyArr[1], keyArr[2]);
 					Y01 = calculateXY01(B2);
 					calculateY02();
-					Y0 = calculateXY0(Y01, Y02);
-					switch (sumKey) {
-					case 0:
-						A = 0.2f;
-						B = 0.5f;
-						G = 0.4f;
-						r = 7.1f;
-						break;
-					case 1:
-						A = 0.3f;
-						B = 0.5f;
-						G = 0.5f;
-						r = 6.1f;
-						break;
-					case 2:
-						A = 0.4f;
-						B = 0.4f;
-						G = 0.6f;
-						r = 5.6f;
-						break;
-					case 3:
-						A = 0.5f;
-						B = 0.8f;
-						G = 0.7f;
-						r = 4.6f;
-						break;
-					case 4:
-						A = 0.5f;
-						B = 0.6f;
-						G = 0.5f;
-						r = 5.1f;
-						break;
-					case 5:
-						A = 0.5f;
-						B = 0.4f;
-						G = 0.4f;
-						r = 5.6f;
-						break;
-
-					default:
-						B = G = 0;
-						A = 1;
-						r = 3.99f;
-					}
-
 				}
 			}
 		double elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
 		System.out.println(elapsedTimeInSec);
+
 		ImageIO.write(img, "bmp", new File(output));
 		return true;
 	}
@@ -567,7 +513,7 @@ public class MultipleIterationImageEncryption {
 	public void generateRandomReal() {
 		int i = 0;
 		while (i < 24) {
-			X0 = logistic(X0, 3.99f);
+			X0 = logisticIteration(X0);
 			/* NOTE:If the key is all zero then X0 will lie out of bounds */
 			if (X0 >= 0.1 && X0 <= 0.9) {
 				f[i] = X0;
@@ -597,6 +543,19 @@ public class MultipleIterationImageEncryption {
 	}
 
 	/**
+	 * Method used to iterate Y0 (key[10])<sub>10</sub> times. (Indexing assumed
+	 * to be from 1.)
+	 */
+	public void iterateY() {
+		int b = keyArr[9];
+		if (Y0 == 0)
+			Y0 = 0.1f;
+		while (b-- > 0) {
+			Y0 = logisticIteration(Y0);
+		}
+	}
+
+	/**
 	 * This method is called after operation on 16 pixel. It modifies the
 	 * Session keys and then calls setHexaKey.
 	 */
@@ -604,12 +563,11 @@ public class MultipleIterationImageEncryption {
 		float s = 0;
 		for (int i = 0; i < 8; i++) {
 			s += keyArr[i];
-			keyArr[i] = (char) ((((int) keyArr[i] + (int) keyArr[9]) % 255) + 1);
+			keyArr[i] = (char) ((((int) keyArr[i] + (int) keyArr[9]) % 256) + 1);
 		}
-		s = ((s / 1000) - (int) (s / 1000) + Y0);
-		s = ((s / 10) - (int) (s / 10));
-		keyArr[9] = (char) ((logistic(s, 3.99f) * 1000) % 256);
-
+		s = ((s/1000) - (int)(s/1000) + Y0);
+		s = ((s/10) - (int)(s/10));
+		keyArr[9] = (char)((logisticIteration(s)*1000)%256);
 		setHexaKey();
 	}
 
@@ -628,7 +586,7 @@ public class MultipleIterationImageEncryption {
 	 */
 	public int notByteXOR(int rgb, int type, int groupno) {// checked
 		/* group 4 and 7 */
-		int xbyte = 0, i, j, k;
+		int i, j, k;
 		i = j = k = 0;
 
 		if (groupno == 3) {
@@ -713,14 +671,10 @@ public class MultipleIterationImageEncryption {
 		String str = "", temp;
 		for (char c : keyArr) {
 			temp = Integer.toHexString((int) c);
-			sumKey += (int) c;
 			if (temp.length() == 1)
 				temp = "0" + temp;
 			str += temp;
 		}
-		seed = logistic(seed * (keyArr[9] / 256.0f), 3.99f);
-		sumKey = (sumKey + (int) (seed * 10000)) % 6;
 		hexaKey = str.toCharArray();
-		// System.out.println(" Y0:"+Y0);
 	}
 }

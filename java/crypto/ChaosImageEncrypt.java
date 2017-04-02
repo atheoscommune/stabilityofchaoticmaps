@@ -484,6 +484,9 @@ public class ChaosImageEncrypt {
 					generateRandomReal();
 					generateIntegerSequence();
 
+					B2 = createB(keyArr[0], keyArr[1], keyArr[2]);
+					Y01 = calculateXY01(B2);
+					calculateY02();
 				}
 			}
 		

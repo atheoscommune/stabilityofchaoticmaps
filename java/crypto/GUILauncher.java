@@ -36,6 +36,10 @@ import javax.swing.JRadioButton;
  */
 public class GUILauncher extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel encryptBtn;
 	BufferedImage  cryptimg, dispimg;
 
@@ -123,14 +127,14 @@ public class GUILauncher extends JFrame {
 					JOptionPane.showMessageDialog(null, "Key length must be 10");
 				} else if (!rdbtnEncrypt.isSelected() && !decryptBtn.isSelected()) {
 					JOptionPane.showMessageDialog(null, "Select encryption or decryption");
-				} else if (dispimg==null) {
+				} else if (f == null) {
 					JOptionPane.showMessageDialog(null, "Choose a BMP file");
 				} else {
 					int cryptType = (rdbtnEncrypt.isSelected() ? 0 : 1);
 					try {
+						//System.out.println(cryptType);
 						String name = f.getName();
 						String pwd = textField.getText();
-						System.out.println(cryptType+" "+pwd);
 						cie.encryptImage(pwd, dispimg, cryptType, "crypto"+name);
 						JOptionPane.showMessageDialog(null, "Process completed!!!!");
 						errorLbl.setIcon(new ImageIcon(dispimg));
