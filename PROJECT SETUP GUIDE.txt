@@ -1,0 +1,73 @@
+GUIDE TO PROJECT SETUP
+===================================================================
+CAUTION: Setting up this project is a herculean task. Even after setting it up on 3 machines, everytime I try, it takes more than 4 hours and a lot of head scratching. I suggest you to rather use the attached scripts directly in R.
+-------------------------------------------------------------------
+Operating System: ubuntu 16.10 (64bit)
+
+Languages/Softwares:
+1) R version 3.3.1
+2) Java 
+	openjdk version "1.8.0_121"
+	OpenJDK Runtime Environment (build 1.8.0_121-8u121-b13-0ubuntu1.16.10.2-b13)
+	OpenJDK 64-Bit Server VM (build 25.121-b13, mixed mode)
+
+IDEs used:(OPTIONAL)
+1) Eclipse neon.2
+2) RStudio
+
+Server:
+Apache Tomcat 8
+......................................................................................
+--------------------------------------------------------------------------------------
+Steps:
+1) Install the Softwares on your system and restart
+
+2) Follow this link to setup JRI into your project http://www.studytrails.com/r/r-and-java-jri-using-eclipse/ or http://stackoverflow.com/questions/4894002/question-about-jri-error
+
+3) After successful setup check by running sample programs on eclipse.
+
+4) It is crucial to note that the project given in this CD/Site already has settings saved in it. Therefore if some unexpected errors occur then try to fix the settings. If unsuccessful then consider copy pasting project files followed by setting up JRI.
+
+5) Install and setup Tomcat server.
+
+6) The program will throw exception if the JRI jars are not available to tomcat folder.
+Look at this link to resolve the problem http://stackoverflow.com/questions/15595879/how-to-set-environment-variables-for-r-to-use-in-tomcat-on-redhat-linux-rhel6
+
+7) Run the server.
+
+Voila the project is up and running.
+
+
+
+
+Troubleshooting
+=================================================================================
+You will only have trouble in two phases 
+1) Setting up JRI in eclipse
+2) Tomcat integration issue
+
+For 1st issue start by changing the VM arguments. Copy pasting and then adding the path also works.
+Helpful links:
+
+http://www.studytrails.com/r/r-and-java-jri-using-eclipse/
+
+http://stackoverflow.com/questions/4894002/question-about-jri-error
+
+
+
+For the second part the key is to copy the jars to the tomcat folder. Search on the internet where to copy. Tomcat extracts the jars during startup. It can't directly access the jar in other folders of the file systems.
+
+This link (already mentioned above) is helpful
+http://stackoverflow.com/questions/15595879/how-to-set-environment-variables-for-r-to-use-in-tomcat-on-redhat-linux-rhel6
+
+
+OTHER ISSUES of crypto module
+===================================================================================
+I would suggest you to use the program execution through your own class. There is some bug in the swing gui. However if you have trouble writing your own class then follow these steps:
+1) Run the GUI
+2) Perform one encryption or one decryption
+3) Close the gui window
+4) Open it again and perform the operation.
+
+
+
